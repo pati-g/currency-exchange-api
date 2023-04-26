@@ -6,7 +6,7 @@ namespace Services
     public class CurrencyExchangeService : ICurrencyExchangeService
     {
         private readonly INBPClient _client;
-        // Date shouldn't be earlier than 2.01.2022
+        // Date shouldn't be earlier than 2.01.2002
         // Single request shouldn't have span longer than 93 days
 
         public CurrencyExchangeService(INBPClient client)

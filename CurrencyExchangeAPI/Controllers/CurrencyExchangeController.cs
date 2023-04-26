@@ -39,7 +39,7 @@ namespace Shared.Controllers
             catch (HttpRequestException ex)
             {
                 _logger.LogWarning(ex.Message);
-                return NotFound("The requested currency code or date are incorrect, please try again. Make sure to use the correct date format: YYY-MM-DD");
+                return NotFound("The exchange rate for the currency code and date provided could not be found.");
             }
         }
 
