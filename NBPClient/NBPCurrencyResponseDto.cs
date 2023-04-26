@@ -8,16 +8,16 @@ namespace NBPClient
 {
     public class NBPCurrencyResponseDto
     {
-        public string Table { get; set; }
-        public string Currency { get; set; } = string.Empty;
-        public string Code { get; set; } = string.Empty;
-        public List<Dictionary<string, string>> Rates { get; set; }
+        public string table { get; set; }
+        public string currency { get; set; } = string.Empty;
+        public string code { get; set; } = string.Empty;
+        public List<Rate> rates { get; set; }
     }
 
     public class Rate
     {
-        public string No { get; set; } = string.Empty;
-        public string EffectiveDate { get; set; } = string.Empty;
-        public double Mid { get; set; }
+        public string no { get; set; } = string.Empty;
+        public string effectiveDate { get; set; } = string.Empty;
+        public double mid { get; set; }
     }
 }
