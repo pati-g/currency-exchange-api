@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace NBPClient
+namespace NBPAPIClient
 {
     public class BuyAskRateResponseDto
     {

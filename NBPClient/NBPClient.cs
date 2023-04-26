@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Globalization;
-using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
+﻿using Shared;
 using System.Text.Json;
 
-namespace NBPClient
+namespace NBPAPIClient
 {
     public class NBPClient
     {
@@ -21,7 +18,7 @@ namespace NBPClient
             return parsed.Rates[0].ExchangeRate;
         }
 
-        public async Task<(double max, double min)> GetMaxAndMin(string currencyCode, int lastQuotations)
+        public async Task<MinMaxRateResponseDto> GetMaxAndMinExchangeRateAsync(string currencyCode, int lastQuotations)
         {
             ValidateQuotationsNumber(lastQuotations);
             ValidateCurrencyCode(currencyCode);
@@ -29,10 +26,10 @@ namespace NBPClient
             var response = await _client.GetStreamAsync($"{_base}/a/{currencyCode}/last/{lastQuotations}");
             var parsed = await JsonSerializer.DeserializeAsync<ExchangeRateResponseDto>(response);
             var rates = parsed.Rates.Select(r => r.ExchangeRate).ToList();
-            return (rates.Max(), rates.Min());
+            return new MinMaxRateResponseDto { MinimalRate = rates.Min(), MaximumRate = rates.Max() };
         }
 
-        public async Task<double> GetMajorDifference(string currencyCode, int lastQuotations)
+        public async Task<double> GetAskBidMajorDifferenceAsync(string currencyCode, int lastQuotations)
         {
             ValidateQuotationsNumber(lastQuotations);
             ValidateCurrencyCode(currencyCode);

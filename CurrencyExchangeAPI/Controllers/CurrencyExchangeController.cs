@@ -1,24 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
+using NBPAPIClient;
 
-namespace CurrencyExchangeAPI.Controllers
+namespace Shared.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class CurrencyExchangeController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
+        private readonly NBPClient _client;
         private readonly ILogger<CurrencyExchangeController> _logger;
 
-        public CurrencyExchangeController(ILogger<CurrencyExchangeController> logger)
+        public CurrencyExchangeController(ILogger<CurrencyExchangeController> logger, NBPClient client)
         {
             _logger = logger;
+            _client = client;
         }
 
-        [HttpGet()]
+        [HttpGet("/exchange-rate")]
         [ProducesResponseType(typeof(double), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -26,10 +23,43 @@ namespace CurrencyExchangeAPI.Controllers
         {
             if (request == null)
             {
+                _logger.LogWarning("Null argument of type {arg}", typeof(CurrencyRequestDto));
+                return BadRequest("Please provide the currency code and date");
+            }
+            var result = await _client.GetAverageExchangeRateAsync(request.Date.ToString(), request.CurrencyCode);
+            return Ok(result);
+        }
+
+        [HttpGet("/max-min-rate")]
+        [ProducesResponseType(typeof(MinMaxRateResponseDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetMaxAndMinExchangeRateAsync([FromQuery] CurrencyQuotationsRequestDto request)
+        {
+            if (request == null)
+            {
+                _logger.LogWarning("Null argument of type {arg}", typeof(CurrencyRequestDto));
                 return BadRequest("Please provide the currency code and date");
             }
 
-            return Ok();
+            var result = await _client.GetMaxAndMinExchangeRateAsync(request.CurrencyCode, request.LastQuotations);
+            return Ok(result);
+        }
+
+        [HttpGet("/ask-bid-difference")]
+        [ProducesResponseType(typeof(double), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetAskBidMajorDifferenceAsync([FromQuery] CurrencyQuotationsRequestDto request)
+        {
+            if (request == null)
+            {
+                _logger.LogWarning("Null argument of type {arg}", typeof(CurrencyRequestDto));
+                return BadRequest("Please provide the currency code and date");
+            }
+
+            var result = await _client.GetAskBidMajorDifferenceAsync(request.CurrencyCode, request.LastQuotations);
+            return Ok(result);
         }
     }
 }

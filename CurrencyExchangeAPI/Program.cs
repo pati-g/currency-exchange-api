@@ -1,4 +1,6 @@
-namespace CurrencyExchangeAPI
+using NBPAPIClient;
+
+namespace Shared
 {
     public class Program
     {
@@ -9,6 +11,9 @@ namespace CurrencyExchangeAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<NBPClient>();
+            builder.Services.AddLogging();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

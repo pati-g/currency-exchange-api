@@ -1,4 +1,4 @@
-namespace CurrencyExchangeAPI
+namespace Shared
 {
     public class WeatherForecast
     {
