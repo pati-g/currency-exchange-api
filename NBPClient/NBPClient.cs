@@ -17,25 +17,36 @@ namespace NBPClient
         public async Task<double> GetAverageExchangeRateAsync(string date, string currencyCode)
         {
             var response = await _client.GetStreamAsync($"{_base}/a/{currencyCode}/{date}");
-            var parsed = JsonSerializer.Deserialize<NBPCurrencyResponseDto>(response);
-            return parsed.rates[0].mid;
+            var parsed = await JsonSerializer.DeserializeAsync<ExchangeRateResponseDto>(response);
+            return parsed.Rates[0].ExchangeRate;
         }
 
         public async Task<(double max, double min)> GetMaxAndMin(string currencyCode, int lastQuotations)
         {
-            //http://api.nbp.pl/api/exchangerates/rates/a/gbp/last/10
-
             ValidateQuotationsNumber(lastQuotations);
             ValidateCurrencyCode(currencyCode);
 
             var response = await _client.GetStreamAsync($"{_base}/a/{currencyCode}/last/{lastQuotations}");
-            var rates = JsonSerializer.Deserialize<NBPCurrencyResponseDto>(response).rates.Select(r => r.mid).ToList();
+            var parsed = await JsonSerializer.DeserializeAsync<ExchangeRateResponseDto>(response);
+            var rates = parsed.Rates.Select(r => r.ExchangeRate).ToList();
             return (rates.Max(), rates.Min());
+        }
+
+        public async Task<double> GetMajorDifference(string currencyCode, int lastQuotations)
+        {
+            ValidateQuotationsNumber(lastQuotations);
+            ValidateCurrencyCode(currencyCode);
+
+            var response = await _client.GetStreamAsync($"{_base}/c/{currencyCode}/last/{lastQuotations}");
+            var parsed = await JsonSerializer.DeserializeAsync<BuyAskRateResponseDto>(response);
+            var rates = parsed.Rates.Select(r => r.AskRate - r.BidRate).ToList();
+
+            return rates.Max();
         }
 
         private static void ValidateQuotationsNumber(int lastQuotations)
         {
-            if (lastQuotations < 0 || lastQuotations > 255)
+            if (lastQuotations < 1 || lastQuotations > 255)
             {
                 throw new ArgumentException("The number of last quotations should be between 1-255");
             }
