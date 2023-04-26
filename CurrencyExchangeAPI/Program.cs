@@ -1,4 +1,5 @@
-using NBPAPIClient;
+using Services;
+using APIClient;
 
 namespace Shared
 {
@@ -11,7 +12,8 @@ namespace Shared
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddScoped<NBPClient>();
+            builder.Services.AddScoped<ICurrencyExchangeService, CurrencyExchangeService>();
+            builder.Services.AddScoped<INBPClient, NBPClient>();
             builder.Services.AddLogging();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NBPClient\NBPClient.csproj" />
+    <ProjectReference Include="..\CurrencyExchangeService\Services.csproj" />
+    <ProjectReference Include="..\NBPClient\APIClient.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 

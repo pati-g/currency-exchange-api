@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using NBPAPIClient;
+using Services;
 
 namespace Shared.Controllers
 {
     [ApiController]
     public class CurrencyExchangeController : ControllerBase
     {
-        private readonly NBPClient _client;
+        private readonly ICurrencyExchangeService _service;
         private readonly ILogger<CurrencyExchangeController> _logger;
 
-        public CurrencyExchangeController(ILogger<CurrencyExchangeController> logger, NBPClient client)
+        public CurrencyExchangeController(ILogger<CurrencyExchangeController> logger, ICurrencyExchangeService client)
         {
             _logger = logger;
-            _client = client;
+            _service = client;
         }
 
         [HttpGet("/exchange-rate")]
@@ -26,8 +26,21 @@ namespace Shared.Controllers
                 _logger.LogWarning("Null argument of type {arg}", typeof(CurrencyRequestDto));
                 return BadRequest("Please provide the currency code and date");
             }
-            var result = await _client.GetAverageExchangeRateAsync(request.Date.ToString(), request.CurrencyCode);
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetAverageExchangeRateAsync(request.Date.ToString(), request.CurrencyCode);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound("The exchange rate for the currency code and date provided could not be found.");
+            }
         }
 
         [HttpGet("/max-min-rate")]
@@ -42,8 +55,21 @@ namespace Shared.Controllers
                 return BadRequest("Please provide the currency code and date");
             }
 
-            var result = await _client.GetMaxAndMinExchangeRateAsync(request.CurrencyCode, request.LastQuotations);
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetMaxAndMinExchangeRateAsync(request.CurrencyCode, request.LastQuotations);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound("The requested currency code could not be found");
+            }
         }
 
         [HttpGet("/ask-bid-difference")]
@@ -58,8 +84,21 @@ namespace Shared.Controllers
                 return BadRequest("Please provide the currency code and date");
             }
 
-            var result = await _client.GetAskBidMajorDifferenceAsync(request.CurrencyCode, request.LastQuotations);
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetAskBidMajorDifferenceAsync(request.CurrencyCode, request.LastQuotations);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound("The requested currency code could not be found");
+            }
         }
     }
 }
