@@ -1,6 +1,4 @@
-﻿using Shared;
-
-namespace APIClient
+﻿namespace APIClient
 {
     public interface INBPClient
     {
