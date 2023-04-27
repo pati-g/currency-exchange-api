@@ -23,5 +23,13 @@ namespace Shared
                 throw new ArgumentException("The currency code provided is invalid");
             }
         }
+
+        public static void ValidateDate(DateOnly date)
+        {
+            if (date < new DateOnly(2002, 01, 02))
+            {
+                throw new ArgumentException("Please note that NBP's earliest available archive data is for 2002-01-02");
+            }
+        }
     }
 }

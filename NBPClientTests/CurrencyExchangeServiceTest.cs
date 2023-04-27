@@ -18,7 +18,7 @@ namespace NBPClientTests
         [Fact]
         public async Task GetExchangeRate_ReturnsCorrectValue()
         {
-            var result = await _service.GetAverageExchangeRateAsync("2023-04-20", "USD");
+            var result = await _service.GetAverageExchangeRateAsync(new DateOnly(2023, 04, 20), "USD");
             Assert.True(result == 4.2024);
         }
 
