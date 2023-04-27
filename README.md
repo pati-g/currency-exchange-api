@@ -10,8 +10,10 @@ To start the application:
 
 - Run this command: <code>dotnet run</code>
 - Open the web browser and enter this URL to go to Swagger UI: http://localhost:5051/swagger/index.html
+
 OR
+
 If you're using [Docker](https://docs.docker.com/get-docker/) and want to run the application in a container:
 - Run the command <code>docker pull patig/currencyexchangeapi:latest</code> to pull the latest Docker image from Docker Hub
 - Run the application: <code>docker run -dp 8080:80 currency-exchange-api</code>
-- Go to http://localhost:8080/swagger/ to open Swagger UI
+- Open your web browser and enter this URL: http://localhost:8080/swagger/ to open Swagger UI
