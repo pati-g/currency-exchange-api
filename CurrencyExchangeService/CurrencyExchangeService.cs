@@ -30,7 +30,7 @@ namespace Services
         {
             var rateDto = await _client.GetAskBidMajorDifferenceAsync(currencyCode, lastQuotations);
             var rates = rateDto.Rates.Select(r => r.AskRate - r.BidRate).ToList();
-            return rates.Max();        
+            return rates.Max();
         }
     }
 }

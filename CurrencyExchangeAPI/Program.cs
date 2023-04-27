@@ -1,5 +1,5 @@
-using Services;
 using APIClient;
+using Services;
 
 namespace Shared
 {
